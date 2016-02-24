@@ -43,13 +43,46 @@ int main(void)
   
   STM3210E_LCD_Init(); 
   LCD_Clear();
-  LCD_DrawChar(0, 0, 'a'); 	// Display a
-  LCD_DrawChar(4, 104, 'b'); 	// Dispaly b 
+  
+  //Enable Key 1
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  
+  //LCD_DrawChar(0, 0, 'a'); 	// Display a
+  //LCD_DrawChar(4, 104, 'b'); 	// Dispaly b 
   while (1) {
-
+    
+    while(GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == 0){};
   /* Task 1: Write your name on LCD */
-
-
+    LCD_Clear();
+    LCD_DrawString(0, 0, "yu chendi", 9);
+    LCD_DrawString(2, 0, "dai yangyang", 12);
+    
+  
+  // Verify Task 2: Draw a cross
+    LCD_Clear();
+    LCD_DrawDot(0, 0);
+    LCD_DrawDot(0, 127);
+    LCD_DrawDot(63, 0);
+    LCD_DrawDot(63, 127);
+    LCD_DrawDot(32, 64);
+    int i = 5;
+    while(i--){
+      LCD_DrawDot(32 + i, 64 + i);
+      LCD_DrawDot(32 + i, 64 - i);
+      LCD_DrawDot(32 - i, 64 + i);
+      LCD_DrawDot(32 - i, 64 - i);
+    }
+  
+  // Verify Task 3: Draw a vertical line
+    LCD_Clear();
+    LCD_DrawDot(0, 0);
+    LCD_DrawDot(1, 0);
+    LCD_DrawDot(2, 0);
+    LCD_DrawDot(3, 0);
+    LCD_DrawDot(4, 0);
   }
  
 }

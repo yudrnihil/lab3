@@ -17,6 +17,7 @@ u8 HexValueOffset[16]={0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x41,0x
   9abcdefg
   ||||||||
 */
+u8 LCDBuffer[8][16] = {0x00};
 u8 ChineseTable[][16] = {
 /*--  Char: " "  -- Character 0 to 31 User Defined */
 //first 20 bytes (00 to 19 are 0x00), display nothing
@@ -503,6 +504,23 @@ void LCD_Draw_ST_Logo()
 void LCD_DrawDot(u8 Xpos, u8 Ypos)
 {
 /* Task 2: Implement the LCD_DrawDot */
+  u8 page = Xpos >> 3;
+  u8 x = Xpos & 0x07;
+  u8 data = (1 << x) | LCDBuffer[page][Ypos];
+  LCDBuffer[page][Ypos] = data;
+  u8 colH = Ypos >> 4;
+  u8 colL = Ypos & 0x0f;
+  
+  LCD_Command = Set_Start_Line_X | 0x0;
+  delay();
+  LCD_Command = Set_Page_Addr_X | page;
+  delay();
+  LCD_Command = Set_ColH_Addr_X | colH;
+  delay();
+  LCD_Command = Set_ColL_Addr_X | colL;
+  delay();
+  LCD_Data = data;
+  delay();
 
 
 /* Task 3: Modify the LCD_DrawDot 
